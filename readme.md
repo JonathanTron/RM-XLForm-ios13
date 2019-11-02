@@ -33,6 +33,8 @@ Example calls which fails are in `app/form_controller.rb`:
 # row.setHiddenToPredicate
 # row.setHiddenToTrue
 # row.setHiddenToFalse
+# row.setHiddenToPredicateFromString "$switch==0"
+# row.setHiddenToPredicateFromString NSString.stringWithFormat("$%@==0", "switch")
 ```
 
 Uncomment one of lines and run with:

@@ -44,6 +44,8 @@ class FormController < XLFormViewController
     # row.setHiddenToPredicate
     # row.setHiddenToTrue
     # row.setHiddenToFalse
+    # row.setHiddenToPredicateFromString "$switch==0"
+    # row.setHiddenToPredicateFromString NSString.stringWithFormat("$%@==0", "switch")
 
     section.addFormRow row
 

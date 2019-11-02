@@ -77,6 +77,7 @@ typedef void(^XLOnChangeBlock)(id __nullable oldValue, id __nullable newValue, X
 @property (nonatomic, nonnull, strong) id hidden;
 -(BOOL)isHidden;
 
+- (void)setHiddenToPredicateFromString: (NSString *)predicate;
 - (void)setHiddenToPredicate;
 - (void)setHiddenToTrue;
 - (void)setHiddenToFalse;
