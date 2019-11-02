@@ -59,7 +59,8 @@ Motion::Project::App.setup do |app|
   app.vendor_project('vendor/RMHelper', :static)
   app.pods do
     source "https://github.com/CocoaPods/Specs"
-    pod "XLForm", "4.1.0"
+    # pod "XLForm", "4.1.0"
+    pod "XLForm", path: "vendor/XLForm"
   end
 
 

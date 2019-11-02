@@ -20,11 +20,12 @@ class FormController < XLFormViewController
       title: "Shown if previous field is on"
     )
 
+    # --- FAIL ---
     # Simple fixed value assign
     # row.hidden = true
 
     # Simple string for predicate creation
-    row.hidden = NSString.stringWithFormat "$%@==0", "switch"
+    # row.hidden = NSString.stringWithFormat "$%@==0", "switch"
 
     # Using an obj-c wrapper to call assign the same string
     # RMHelper.set_hidden({
@@ -34,6 +35,13 @@ class FormController < XLFormViewController
 
     # Using an obj-c wrapper which sets hidden to false
     # RMHelper.hide_row(row)
+
+    # --- WORK ---
+    # New methods on XLFormDescriptor
+    # row.setHiddenToPredicate
+    # row.setHiddenToTrue
+    # row.setHiddenToFalse
+
     section.addFormRow row
 
     super.initWithForm(form)
