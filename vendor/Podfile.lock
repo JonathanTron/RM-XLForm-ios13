@@ -1,0 +1,16 @@
+PODS:
+  - XLForm (4.1.0)
+
+DEPENDENCIES:
+  - XLForm (= 4.1.0)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - XLForm
+
+SPEC CHECKSUMS:
+  XLForm: 7ee02761be8a369d1ad1bbffe738b97083d94f3e
+
+PODFILE CHECKSUM: d3a1be7de4c24821415dc35e65104277cc8b6c0b
+
+COCOAPODS: 1.8.0
