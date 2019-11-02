@@ -1,102 +1,70 @@
-# Join the RubyMotion Slack Channel #
+# Simple reproduction case for XLForm + RubyMotion failure on iOS 13.x
 
-[Here is the link.](http://motioneers.herokuapp.com/) Say hello!
+Compile with RM 6.5, XCode 11.2 and deploy to iOS 13.2 simulator.
 
-# Minimum Requirements #
+The exact same behaviour appear as long as you try to *run* it on iOS 13.2,
+no matter if you compile with XCode 10.3/iOS 12.4 then run on iOS 13.2, or if
+we switch back to XLForm 3.3.0...
 
-The minimum requirements to use this template are XCode 9.2 and
-RubyMotion 5.0.
+Example calls which fails are in `app/form_controller.rb`:
 
-Keep in mind that if you've recently upgraded from a previous versions
-of XCode or RubyMotion, you'll want to run `rake clean:all` as opposed
-to just `rake clean`.
+```
+# --- FAIL ---
+# Simple const value assign
+# row.hidden = true
 
-# Build #
+# Simple const value assign via setHidden method call
+# row.setHidden(true)
 
-To build using the default simulator, run: `rake` (alias `rake
-simulator`).
+# Simple string for predicate creation
+# row.hidden = NSString.stringWithFormat "$%@==0", "switch"
 
-To run on a specific type of simulator. You can run `rake simulator
-device_name="SIMULATOR"`. Here is a list of simulators available:
+# Using an obj-c wrapper to call assign the same string
+# RMHelper.set_hidden({
+#   "control" => row,
+#   "hidden_value" => NSString.stringWithFormat("$%@==0", "switch")
+# })
 
-- `rake simulator device_name='iPhone 5s'`
-- `rake simulator device_name='iPhone 8 Plus'`
-- `rake simulator device_name='iPhone 8 Plus'`
-- `rake simulator device_name='iPhone X'`
-- `rake simulator device_name='iPad Pro (9.7-inch)'`
-- `rake simulator device_name='iPad Pro (10.5-inch)'`
-- `rake simulator device_name='iPad Pro (12.9-inch)'`
+# Using an obj-c wrapper which sets hidden to false
+# RMHelper.hide_row(row)
 
-Consider using https://github.com/KrauseFx/xcode-install (and other
-parts of FastLane) to streamline management of simulators,
-certificates, and pretty much everything else.
-
-So, for example, you can run `rake simulator device_name='iPhone X'`
-to see what your app would look like on iPhone X.
-
-# Deploying to the App Store #
-
-To deploy to the App Store, you'll want to use `rake clean
-archive:distribution`. With a valid distribution certificate.
-
-In your `Rakefile`, set the following values:
-
-```ruby
-#This is only an example, the location where you store your provisioning profiles is at your discretion.
-app.codesign_certificate = "iPhone Distribution: xxxxx" #This is only an example, you certificate name may be different.
-
-#This is only an example, the location where you store your provisioning profiles is at your discretion.
-app.provisioning_profile = './profiles/distribution.mobileprovision'
+# --- WORK ---
+# New methods on XLFormDescriptor
+# row.setHiddenToPredicate
+# row.setHiddenToTrue
+# row.setHiddenToFalse
 ```
 
-For TestFlight builds, you'll need to include the following line
-(still using the distribution certificates):
+Uncomment one of lines and run with:
 
-```ruby
-app.entitlements['beta-reports-active'] = true
+```
+rake simulator debug=1
 ```
 
-# Icons #
+When calling `row.hidden =` or `row.setHidden` from ruby it always fail with the
+following backtrace:
 
-As of iOS 11, Apple requires the use of Asset Catalogs for defining
-icons and launch screens. You'll find icon and launch screen templates
-under `./resources/Assets.xcassets`. 
-
-The current build has a built-in icon generate that can be triggered 
-from your Rakefile. The first step is to create a PNG file (keep in 
-mind that your `.png` file _cannot_ contain alpha channels) and place 
-it in your `resources` directory. This file should be a minimum of 1024 
-x 1024 pixels (it can be higher) and should be square (to prevent 
-aspect distortion during the generation process).
-
-To generate your icon in the Asset catalogue, add a dependency to your `Rakefile` as follows:
-
-```ruby
-task :icons => 'resources/app-icon.icon_asset'
 ```
+1 location added to breakpoint 2
+Process 2825 resuming
+Process 2825 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x1)
+    frame #0: 0x00007fff50bad357 libobjc.A.dylib`objc_retain + 7
+libobjc.A.dylib`objc_retain:
+->  0x7fff50bad357 <+7>:  movq   (%rdi), %rax
+    0x7fff50bad35a <+10>: testb  $0x4, 0x20(%rax)
+    0x7fff50bad35e <+14>: jne    0x7fff50bad378            ; objc_object::sidetable_retain()
+    0x7fff50bad364 <+20>: movq   0x3911706d(%rip), %rsi    ; "retain"
+Target 0: (xlform-ios13) stopped.
 
-For the above example, the application icon is in a file called `resources/app-icon.png`. The new icons are then generated with the following command:
-
-```sh
-bundle exec rake icons
+(lldb) thead backtrace
+error: 'thead' is not a valid command.
+(lldb) thread backtrace
+* thread #1, queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x1)
+  * frame #0: 0x00007fff50bad357 libobjc.A.dylib`objc_retain + 7
+    frame #1: 0x0000000100014b29 xlform-ios13`-[XLFormRowDescriptor setHidden:](self=<unavailable>, _cmd=<unavailable>, hidden=<unavailable>) at XLFormRowDescriptor.m:516 [opt]
+    frame #2: 0x000000010003134c xlform-ios13`__unnamed_127 + 92
+    frame #3: 0x0000000100149154 xlform-ios13`rb_vm_dispatch + 8100
+    frame #4: 0x000000010002cf34 xlform-ios13`vm_dispatch + 1380
+    frame #5: 0x000000010002fcbe xlform-ios13`rb_scope__init__(self=0x0000600000cb8c30) at form_controller.rb:28
 ```
-Once complete the new set of icon assets (and the `Contents.json` file)
-are generated. Additionally the file `resources/app-icon.icon_asset` will be 
-created (and should be added to git) to track when the generated icons require
-a rebuild (the above command can be run multiple time and will only regenerated
-when the base `.png` is newer than the icon assets).
-
-To make the icon generate part of your regular build process, add then following
-dependency (replacing the previous dependency):
-
-```ruby
-task 'build:icons' => 'resources/app-icon.icon_asset'
-```
-
-Now, the icon assets will be regenerated (if the `resources/app-icon.png` file is newer than the assets) whenever you run any `bundle exec rake` command.
-
-For more information about Asset Catalogs, refer to this link: https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/
-
-*Note:* For existing projects that do not have the Assets.xcassets directories from the new 
-RubyMotion templates can simply add the `task 'build:icons' ...` dependency from above and 
-all of the necessary files will be generated. 

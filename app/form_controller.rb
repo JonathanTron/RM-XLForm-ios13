@@ -21,8 +21,11 @@ class FormController < XLFormViewController
     )
 
     # --- FAIL ---
-    # Simple fixed value assign
+    # Simple const value assign
     # row.hidden = true
+
+    # Simple const value assign via setHidden method call
+    # row.setHidden(true)
 
     # Simple string for predicate creation
     # row.hidden = NSString.stringWithFormat "$%@==0", "switch"
