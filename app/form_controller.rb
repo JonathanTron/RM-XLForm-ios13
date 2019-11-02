@@ -36,7 +36,7 @@ class FormController < XLFormViewController
     #   "hidden_value" => NSString.stringWithFormat("$%@==0", "switch")
     # })
 
-    # Using an obj-c wrapper which sets hidden to false
+    # Using an obj-c wrapper which sets hidden to true
     # RMHelper.hide_row(row)
 
     # --- WORK ---

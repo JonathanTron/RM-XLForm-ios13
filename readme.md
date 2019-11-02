@@ -25,7 +25,7 @@ Example calls which fails are in `app/form_controller.rb`:
 #   "hidden_value" => NSString.stringWithFormat("$%@==0", "switch")
 # })
 
-# Using an obj-c wrapper which sets hidden to false
+# Using an obj-c wrapper which sets hidden to true
 # RMHelper.hide_row(row)
 
 # --- WORK ---
