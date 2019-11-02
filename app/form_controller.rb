@@ -40,12 +40,10 @@ class FormController < XLFormViewController
     # RMHelper.hide_row(row)
 
     # --- WORK ---
-    # New methods on XLFormDescriptor
-    # row.setHiddenToPredicate
-    # row.setHiddenToTrue
-    # row.setHiddenToFalse
-    # row.setHiddenToPredicateFromString "$switch==0"
-    # row.setHiddenToPredicateFromString NSString.stringWithFormat("$%@==0", "switch")
+    # New method on XLFormDescriptor
+    # row.setHiddenFromRuby true
+    # row.setHiddenFromRuby "$switch==0"
+    row.setHiddenFromRuby NSString.stringWithFormat("$%@==0", "switch")
 
     section.addFormRow row
 

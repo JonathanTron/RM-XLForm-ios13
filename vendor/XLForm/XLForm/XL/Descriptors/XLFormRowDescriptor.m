@@ -501,20 +501,8 @@ NSString * const XLHidePredicateCacheKey = @"hidePredicateCache";
     return [self.hidePredicateCache boolValue];
 }
 
-- (void)setHiddenToPredicateFromString: (NSString *)predicate{
-  [self setHidden: predicate];
-}
-
-- (void)setHiddenToPredicate {
-  [self setHidden: [NSString stringWithFormat:@"$%@==0", @"switch"]];
-}
-
-- (void)setHiddenToTrue {
-  [self setHidden: @YES];
-}
-
-- (void)setHiddenToFalse {
-  [self setHidden: @NO];
+- (void)setHiddenFromRuby: (id)value{
+  [self setHidden:value];
 }
 
 -(void)setHidden:(id)hidden

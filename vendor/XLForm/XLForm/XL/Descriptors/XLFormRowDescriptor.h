@@ -77,10 +77,7 @@ typedef void(^XLOnChangeBlock)(id __nullable oldValue, id __nullable newValue, X
 @property (nonatomic, nonnull, strong) id hidden;
 -(BOOL)isHidden;
 
-- (void)setHiddenToPredicateFromString: (NSString *)predicate;
-- (void)setHiddenToPredicate;
-- (void)setHiddenToTrue;
-- (void)setHiddenToFalse;
+- (void)setHiddenFromRuby: (id)value;
 
 @property (getter=isRequired, nonatomic, assign) BOOL required;
 
